@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的动态项目列表</title>
+    <style>
+        body { font-family: system-ui; max-width: 500px; margin: 2rem auto; padding: 0 1rem; }
+        input, button { font-size: 1rem; padding: 0.4rem 0.8rem; margin: 0.3rem 0; }
+        ul { list-style: none; padding: 0; }
+        li { display: flex; justify-content: space-between; align-items: center; background: #f0f0f0; margin: 0.3rem 0; padding: 0.5rem; border-radius: 4px; }
+        .hidden { display: none; }
+        .delete-btn { background: none; border: none; color: red; cursor: pointer; font-size: 1rem; }
+    </style>
+</head>
+<body>
+    <h1>👤 杨德耀的动态网站</h1>
+
+    <!-- 添加新项目 -->
+    <div>
+        <input type="text" id="newProject" placeholder="项目名称">
+        <input type="text" id="newTags" placeholder="标签 (用空格分隔)">
+        <button id="addBtn">➕ 添加</button>
+    </div>
+
+    <!-- 搜索 -->
+    <div style="margin: 1rem 0;">
+        <input type="text" id="search" placeholder="🔍 搜索项目或标签...">
+    </div>
+
+    <!-- 项目列表 -->
+    <ul id="projectList"></ul>
+
+    <script>
+        const STORAGE_KEY = 'my_projects';
+
+        // 从 localStorage 读取项目
+        function loadProjects() {
+            const json = localStorage.getItem(STORAGE_KEY);
+            return json ? JSON.parse(json) : [];
+        }
+
+        // 保存项目到 localStorage
+        function saveProjects(projects) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(projects));
+        }
+
+        // 渲染列表（根据搜索词过滤）
+        function render(filter = '') {
+            const projects = loadProjects();
+            const list = document.getElementById('projectList');
+            list.innerHTML = '';
+            const q = filter.toLowerCase().trim();
+
+            projects.forEach((proj, index) => {
+                const name = proj.name || '';
+                const tags = proj.tags || '';
+                // 如果搜索词不为空，且名称和标签都不包含搜索词，则隐藏
+                if (q && !name.toLowerCase().includes(q) && !tags.toLowerCase().includes(q)) {
+                    return;
+                }
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <span><strong>${escapeHtml(name)}</strong> <small style="color:#555;">${escapeHtml(tags)}</small></span>
+                    <button class="delete-btn" data-index="${index}">✕</button>
+                `;
+                list.appendChild(li);
+            });
+
+            // 给所有删除按钮绑定事件
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const idx = parseInt(this.getAttribute('data-index'));
+                    const all = loadProjects();
+                    all.splice(idx, 1);
+                    saveProjects(all);
+                    render(document.getElementById('search').value);
+                });
+            });
+        }
+
+        // 简单转义防止XSS
+        function escapeHtml(text) {
+            return String(text)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+        }
+
+        // 添加新项目
+        document.getElementById('addBtn').addEventListener('click', () => {
+            const nameInput = document.getElementById('newProject');
+            const tagsInput = document.getElementById('newTags');
+            const name = nameInput.value.trim();
+            if (!name) return;
+            const tags = tagsInput.value.trim();
+            const projects = loadProjects();
+            projects.push({ name, tags });
+            saveProjects(projects);
+            nameInput.value = '';
+            tagsInput.value = '';
+            render(document.getElementById('search').value);
+        });
+
+        // 搜索实时过滤
+        document.getElementById('search').addEventListener('input', function() {
+            render(this.value);
+        });
+
+        // 初始渲染
+        render();
+    </script>
+</body>
+</html>
