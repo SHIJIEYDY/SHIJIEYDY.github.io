@@ -1,115 +1,1377 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>https://shijieydy.github.io/</title>
+    <title>杨德耀 · 个人项目空间</title>
     <style>
-        body { font-family: system-ui; max-width: 500px; margin: 2rem auto; padding: 0 1rem; }
-        input, button { font-size: 1rem; padding: 0.4rem 0.8rem; margin: 0.3rem 0; }
-        ul { list-style: none; padding: 0; }
-        li { display: flex; justify-content: space-between; align-items: center; background: #f0f0f0; margin: 0.3rem 0; padding: 0.5rem; border-radius: 4px; }
-        .hidden { display: none; }
-        .delete-btn { background: none; border: none; color: red; cursor: pointer; font-size: 1rem; }
+        :root {
+            --bg: #f5f3f0;
+            --surface: #ffffff;
+            --surface-hover: #faf9f7;
+            --text: #2c2c2c;
+            --text-secondary: #6b6b6b;
+            --text-tertiary: #999;
+            --border: #e6e3df;
+            --border-focus: #c9b99a;
+            --accent: #8b6f4e;
+            --accent-light: #f0e8db;
+            --accent-glow: rgba(139, 111, 78, 0.12);
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.10);
+            --radius-sm: 6px;
+            --radius: 10px;
+            --radius-lg: 14px;
+            --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --font-mono: 'SF Mono', 'Cascadia Code', 'Consolas', 'Monaco', monospace;
+            --danger: #d44;
+            --danger-bg: #fef0f0;
+            --success: #5a9e6f;
+            --success-bg: #edf7f0;
+            --card-stripe: #f8f6f2;
+        }
+
+        [data-theme="dark"] {
+            --bg: #1a1a1c;
+            --surface: #242426;
+            --surface-hover: #2a2a2d;
+            --text: #e4e4e4;
+            --text-secondary: #b0b0b0;
+            --text-tertiary: #777;
+            --border: #333335;
+            --border-focus: #6b5a42;
+            --accent: #c9a96e;
+            --accent-light: #2e281e;
+            --accent-glow: rgba(201, 169, 110, 0.15);
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.3);
+            --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.4);
+            --danger: #f87171;
+            --danger-bg: #2a1a1a;
+            --success: #6dbd80;
+            --success-bg: #1a2a1e;
+            --card-stripe: #2a2a2e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.6;
+            transition: background var(--transition), color var(--transition);
+            background-image:
+                radial-gradient(ellipse at 20% 10%, var(--accent-glow) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 90%, var(--accent-glow) 0%, transparent 55%);
+            background-attachment: fixed;
+        }
+
+        .container {
+            max-width: 620px;
+            margin: 0 auto;
+            padding: 1.5rem 1.2rem 3rem;
+        }
+
+        /* ── Header ─────────────────────── */
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin-bottom: 0.4rem;
+        }
+        .header-left h1 {
+            font-size: 1.7rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .header-left h1 .icon {
+            font-size: 1.5rem;
+        }
+        .header-left .author {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 0.15rem;
+            font-weight: 450;
+        }
+        .theme-toggle {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 0.45rem 1rem;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            transition: all var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            white-space: nowrap;
+            box-shadow: var(--shadow-sm);
+        }
+        .theme-toggle:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            box-shadow: var(--shadow-md);
+        }
+        .theme-toggle .toggle-icon {
+            font-size: 1.1rem;
+            transition: transform 0.35s ease;
+        }
+        [data-theme="dark"] .theme-toggle .toggle-icon {
+            transform: rotate(180deg);
+        }
+
+        /* ── Stats bar ─────────────────── */
+        .stats-bar {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.2rem;
+            font-size: 0.82rem;
+            color: var(--text-tertiary);
+        }
+        .stat-chip {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 0.3rem 0.75rem;
+            box-shadow: var(--shadow-sm);
+            transition: all var(--transition);
+            cursor: default;
+        }
+        .stat-chip strong {
+            color: var(--accent);
+            font-weight: 650;
+        }
+
+        /* ── Add section ───────────────── */
+        .add-section {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 1.2rem 1.3rem;
+            margin-bottom: 1rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border);
+            transition: all var(--transition);
+        }
+        .add-section:focus-within {
+            border-color: var(--border-focus);
+            box-shadow: var(--shadow-lg), 0 0 0 4px var(--accent-glow);
+        }
+        .add-row {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .add-row input {
+            flex: 1 1 140px;
+            min-width: 120px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 0.5rem 0.7rem;
+            font-size: 0.9rem;
+            color: var(--text);
+            transition: all var(--transition);
+            font-family: inherit;
+        }
+        .add-row input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+            background: var(--surface);
+        }
+        .add-row input::placeholder {
+            color: var(--text-tertiary);
+        }
+        .add-row-expand {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+            animation: fadeSlideIn 0.25s ease;
+        }
+        .add-row-expand input {
+            flex: 1 1 160px;
+            min-width: 130px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 0.45rem 0.7rem;
+            font-size: 0.85rem;
+            color: var(--text);
+            transition: all var(--transition);
+            font-family: inherit;
+        }
+        .add-row-expand input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+            background: var(--surface);
+        }
+        .add-row-expand input::placeholder {
+            color: var(--text-tertiary);
+        }
+        .btn {
+            font-family: inherit;
+            font-size: 0.88rem;
+            padding: 0.5rem 1.1rem;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            font-weight: 550;
+            transition: all var(--transition);
+            border: 1px solid transparent;
+            white-space: nowrap;
+            letter-spacing: 0.01em;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        .btn-primary {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+        }
+        .btn-primary:hover {
+            filter: brightness(1.1);
+            box-shadow: 0 4px 12px var(--accent-glow);
+            transform: translateY(-1px);
+        }
+        .btn-primary:active {
+            transform: scale(0.97);
+            transition: transform 0.1s;
+        }
+        .btn-ghost {
+            background: transparent;
+            border-color: var(--border);
+            color: var(--text-secondary);
+        }
+        .btn-ghost:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: var(--accent-light);
+        }
+        .btn-sm {
+            font-size: 0.78rem;
+            padding: 0.3rem 0.7rem;
+            border-radius: 50px;
+        }
+        .btn-icon {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 0.25rem 0.4rem;
+            border-radius: var(--radius-sm);
+            color: var(--text-tertiary);
+            transition: all var(--transition);
+            line-height: 1;
+        }
+        .btn-icon:hover {
+            color: var(--text);
+            background: var(--bg);
+        }
+        .btn-icon.danger:hover {
+            color: var(--danger);
+            background: var(--danger-bg);
+        }
+        .btn-icon.edit:hover {
+            color: var(--accent);
+            background: var(--accent-light);
+        }
+
+        /* ── Search ────────────────────── */
+        .search-wrap {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+        .search-wrap input {
+            width: 100%;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 0.6rem 2.5rem 0.6rem 1rem;
+            font-size: 0.9rem;
+            color: var(--text);
+            transition: all var(--transition);
+            font-family: inherit;
+            box-shadow: var(--shadow-sm);
+        }
+        .search-wrap input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: var(--shadow-md), 0 0 0 4px var(--accent-glow);
+        }
+        .search-wrap input::placeholder {
+            color: var(--text-tertiary);
+        }
+        .search-clear {
+            position: absolute;
+            right: 0.6rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            color: var(--text-tertiary);
+            padding: 0.3rem;
+            border-radius: 50%;
+            transition: all var(--transition);
+            line-height: 1;
+            opacity: 0;
+            pointer-events: none;
+        }
+        .search-clear.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .search-clear:hover {
+            color: var(--danger);
+            background: var(--danger-bg);
+        }
+        .search-info {
+            font-size: 0.78rem;
+            color: var(--text-tertiary);
+            margin-bottom: 0.6rem;
+            padding-left: 0.3rem;
+            transition: all var(--transition);
+        }
+
+        /* ── Project list ──────────────── */
+        .project-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.55rem;
+        }
+        .project-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 0.85rem 1rem;
+            box-shadow: var(--shadow-sm);
+            transition: all var(--transition);
+            position: relative;
+            overflow: hidden;
+            animation: fadeSlideIn 0.35s ease backwards;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.7rem;
+        }
+        .project-card:nth-child(1) {
+            animation-delay: 0ms;
+        }
+        .project-card:nth-child(2) {
+            animation-delay: 30ms;
+        }
+        .project-card:nth-child(3) {
+            animation-delay: 60ms;
+        }
+        .project-card:nth-child(4) {
+            animation-delay: 90ms;
+        }
+        .project-card:nth-child(5) {
+            animation-delay: 120ms;
+        }
+        .project-card:nth-child(n+6) {
+            animation-delay: 140ms;
+        }
+        .project-card:hover {
+            box-shadow: var(--shadow-md);
+            border-color: #d5cfc5;
+            transform: translateY(-2px);
+        }
+        [data-theme="dark"] .project-card:hover {
+            border-color: #504a3e;
+        }
+        .project-card.completed {
+            opacity: 0.7;
+            border-left: 3px solid var(--success);
+        }
+        .project-card.completed .project-name {
+            text-decoration: line-through;
+            text-decoration-color: var(--text-tertiary);
+            text-decoration-thickness: 2px;
+        }
+        .card-check {
+            flex-shrink: 0;
+            margin-top: 0.15rem;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            background: var(--surface);
+            transition: all var(--transition);
+            position: relative;
+            flex-shrink: 0;
+        }
+        .card-check:checked {
+            background: var(--success);
+            border-color: var(--success);
+        }
+        .card-check:checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.7rem;
+            color: #fff;
+            font-weight: 700;
+        }
+        .card-check:hover {
+            border-color: var(--success);
+            box-shadow: 0 0 0 4px var(--success-bg);
+        }
+        .card-body {
+            flex: 1;
+            min-width: 0;
+        }
+        .card-header-row {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-bottom: 0.2rem;
+        }
+        .project-name {
+            font-weight: 650;
+            font-size: 0.95rem;
+            color: var(--text);
+            word-break: break-word;
+            transition: color var(--transition);
+        }
+        .project-link-icon {
+            font-size: 0.8rem;
+            color: var(--accent);
+            text-decoration: none;
+            transition: all var(--transition);
+            flex-shrink: 0;
+        }
+        .project-link-icon:hover {
+            color: var(--accent);
+            filter: brightness(1.3);
+            transform: scale(1.15);
+        }
+        .card-description {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.35rem;
+            line-height: 1.45;
+            word-break: break-word;
+        }
+        .card-meta {
+            font-size: 0.72rem;
+            color: var(--text-tertiary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .tag-badge {
+            display: inline-block;
+            font-size: 0.7rem;
+            padding: 0.2em 0.6em;
+            border-radius: 50px;
+            font-weight: 550;
+            cursor: pointer;
+            transition: all var(--transition);
+            letter-spacing: 0.02em;
+            border: 1px solid transparent;
+            user-select: none;
+        }
+        .tag-badge:hover {
+            filter: brightness(0.9) saturate(1.3);
+            transform: scale(1.06);
+            border-color: currentColor;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+        .tag-badge:active {
+            transform: scale(0.95);
+            transition: transform 0.08s;
+        }
+        .card-actions {
+            display: flex;
+            gap: 0.15rem;
+            flex-shrink: 0;
+            align-items: center;
+            margin-top: 0.1rem;
+        }
+
+        /* ── Empty state ──────────────── */
+        .empty-state {
+            text-align: center;
+            padding: 2.5rem 1rem;
+            color: var(--text-tertiary);
+            animation: fadeSlideIn 0.5s ease;
+        }
+        .empty-state .empty-icon {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 0.8rem;
+            opacity: 0.6;
+        }
+        .empty-state p {
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        /* ── Modal / Overlay ──────────── */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.2s ease;
+            padding: 1rem;
+        }
+        .modal-overlay.hidden {
+            display: none;
+        }
+        .modal {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            padding: 1.5rem;
+            width: 100%;
+            max-width: 440px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border);
+            animation: slideUp 0.3s ease;
+        }
+        .modal h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: var(--text);
+            font-weight: 650;
+        }
+        .modal label {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.2rem;
+            margin-top: 0.65rem;
+            font-weight: 500;
+        }
+        .modal label:first-of-type {
+            margin-top: 0;
+        }
+        .modal input,
+        .modal textarea {
+            width: 100%;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 0.5rem 0.7rem;
+            font-size: 0.9rem;
+            color: var(--text);
+            font-family: inherit;
+            transition: all var(--transition);
+            resize: vertical;
+        }
+        .modal textarea {
+            min-height: 60px;
+            resize: vertical;
+        }
+        .modal input:focus,
+        .modal textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+        .modal-actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+            margin-top: 1.2rem;
+        }
+
+        /* ── Footer actions ───────────── */
+        .footer-actions {
+            display: flex;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+            justify-content: center;
+        }
+        .footer-note {
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+            margin-top: 1rem;
+        }
+        .footer-note a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .footer-note a:hover {
+            text-decoration: underline;
+        }
+
+        /* ── Animations ───────────────── */
+        @keyframes fadeSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.96);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        @keyframes pulse {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.04);
+            }
+        }
+        .pulse-once {
+            animation: pulse 0.4s ease;
+        }
+
+        /* ── Responsive ──────────────── */
+        @media (max-width: 480px) {
+            .container {
+                padding: 0.8rem 0.7rem 2rem;
+            }
+            .header-left h1 {
+                font-size: 1.4rem;
+            }
+            .add-section {
+                padding: 0.9rem;
+            }
+            .add-row input {
+                flex: 1 1 100%;
+                min-width: 100%;
+            }
+            .add-row-expand input {
+                flex: 1 1 100%;
+                min-width: 100%;
+            }
+            .project-card {
+                padding: 0.7rem 0.8rem;
+                flex-wrap: wrap;
+            }
+            .card-actions {
+                margin-left: auto;
+            }
+            .btn {
+                font-size: 0.82rem;
+                padding: 0.4rem 0.85rem;
+            }
+            .modal {
+                padding: 1.2rem;
+                margin: 0.5rem;
+            }
+        }
     </style>
 </head>
 <body>
-    <h1>👤 个人网站</h1>
-    <h2> 作者：杨德耀</h2>
+    <div class="container">
+        <!-- ── Header ──────────────────────────── -->
+        <header class="header">
+            <div class="header-left">
+                <h1><span class="icon">📂</span>个人项目空间</h1>
+                <p class="author">👤 杨德耀</p>
+            </div>
+            <button class="theme-toggle" id="themeToggle" title="切换深色/浅色主题">
+                <span class="toggle-icon">🌙</span> <span class="toggle-label">暗色</span>
+            </button>
+        </header>
 
-    <!-- 添加新项目 -->
-    <div>
-        <input type="text" id="newProject" placeholder="项目名称">
-        <input type="text" id="newTags" placeholder="标签 (用空格分隔)">
-        <button id="addBtn">➕ 添加</button>
+        <!-- ── 统计栏 ──────────────────────────── -->
+        <div class="stats-bar" id="statsBar">
+            <span class="stat-chip">📦 总计 <strong id="statTotal">0</strong> 个项目</span>
+            <span class="stat-chip" id="statCompletedChip" style="display:none;">✅ 已完成 <strong id="statCompleted">0</strong></span>
+            <span class="stat-chip" id="statFilteredChip" style="display:none;">🔍 筛选结果 <strong id="statFiltered">0</strong></span>
+        </div>
+
+        <!-- ── 添加区域 ────────────────────────── -->
+        <div class="add-section" id="addSection">
+            <div class="add-row">
+                <input type="text" id="newProject" placeholder="项目名称 *" autocomplete="off">
+                <input type="text" id="newTags" placeholder="标签 (空格分隔)" autocomplete="off">
+                <button class="btn btn-primary" id="addBtn">➕ 添加</button>
+                <button class="btn btn-ghost btn-sm" id="toggleMoreFields" title="更多字段">⋮</button>
+            </div>
+            <div class="add-row-expand hidden" id="moreFields">
+                <input type="text" id="newDescription" placeholder="简短描述 (可选)" autocomplete="off">
+                <input type="url" id="newUrl" placeholder="项目链接 https://... (可选)" autocomplete="off">
+            </div>
+        </div>
+
+        <!-- ── 搜索栏 ──────────────────────────── -->
+        <div class="search-wrap">
+            <input type="text" id="search" placeholder="🔍 搜索项目、标签或描述..." autocomplete="off">
+            <button class="search-clear" id="searchClear" title="清除搜索">✕</button>
+        </div>
+        <p class="search-info hidden" id="searchInfo"></p>
+
+        <!-- ── 项目列表 ────────────────────────── -->
+        <ul class="project-list" id="projectList"></ul>
+        <div class="empty-state hidden" id="emptyState">
+            <span class="empty-icon">📋</span>
+            <p>还没有项目，快来添加第一个吧！</p>
+        </div>
+
+        <!-- ── 底部操作 ────────────────────────── -->
+        <div class="footer-actions">
+            <button class="btn btn-ghost btn-sm" id="exportBtn">📥 导出数据</button>
+            <button class="btn btn-ghost btn-sm" id="importBtn">📤 导入数据</button>
+            <button class="btn btn-ghost btn-sm" id="clearAllBtn" style="color:var(--danger);border-color:var(--danger);">🗑 清空全部</button>
+        </div>
+        <p class="footer-note">
+            🌐 <a href="https://shijieydy.github.io/" target="_blank" rel="noopener">shijieydy.github.io</a>
+            &nbsp;·&nbsp; 数据存储在浏览器本地
+        </p>
     </div>
 
-    <!-- 搜索 -->
-    <div style="margin: 1rem 0;">
-        <input type="text" id="search" placeholder="🔍 搜索项目或标签...">
+    <!-- ── 编辑模态框 ────────────────────────── -->
+    <div class="modal-overlay hidden" id="editModalOverlay">
+        <div class="modal" id="editModal">
+            <h3>✏️ 编辑项目</h3>
+            <label for="editName">项目名称</label>
+            <input type="text" id="editName" placeholder="项目名称">
+            <label for="editTags">标签 (空格分隔)</label>
+            <input type="text" id="editTags" placeholder="标签 (空格分隔)">
+            <label for="editDescription">描述</label>
+            <textarea id="editDescription" placeholder="简短描述 (可选)" rows="2"></textarea>
+            <label for="editUrl">链接</label>
+            <input type="url" id="editUrl" placeholder="https://... (可选)">
+            <div class="modal-actions">
+                <button class="btn btn-ghost" id="editCancel">取消</button>
+                <button class="btn btn-primary" id="editSave">💾 保存</button>
+            </div>
+        </div>
     </div>
 
-    <!-- 项目列表 -->
-    <ul id="projectList"></ul>
+    <!-- ── 隐藏的文件导入input ──────────────── -->
+    <input type="file" id="importFileInput" accept=".json" style="display:none;">
 
     <script>
-        const STORAGE_KEY = 'my_projects';
+        (function() {
+            const STORAGE_KEY = 'my_projects_v2';
+            const THEME_KEY = 'app_theme';
+            let currentEditIndex = -1;
+            let moreFieldsVisible = false;
 
-        // 从 localStorage 读取项目
-        function loadProjects() {
-            const json = localStorage.getItem(STORAGE_KEY);
-            return json ? JSON.parse(json) : [];
-        }
+            // ── DOM 引用 ──────────────────────
+            const $ = (sel) => document.querySelector(sel);
+            const $$ = (sel) => document.querySelectorAll(sel);
 
-        // 保存项目到 localStorage
-        function saveProjects(projects) {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(projects));
-        }
+            const projectList = $('#projectList');
+            const emptyState = $('#emptyState');
+            const searchInput = $('#search');
+            const searchClear = $('#searchClear');
+            const searchInfo = $('#searchInfo');
+            const newProjectInput = $('#newProject');
+            const newTagsInput = $('#newTags');
+            const newDescriptionInput = $('#newDescription');
+            const newUrlInput = $('#newUrl');
+            const addBtn = $('#addBtn');
+            const toggleMoreBtn = $('#toggleMoreFields');
+            const moreFields = $('#moreFields');
+            const themeToggle = $('#themeToggle');
+            const statsBar = $('#statsBar');
+            const statTotal = $('#statTotal');
+            const statCompleted = $('#statCompleted');
+            const statCompletedChip = $('#statCompletedChip');
+            const statFiltered = $('#statFiltered');
+            const statFilteredChip = $('#statFilteredChip');
+            const editModalOverlay = $('#editModalOverlay');
+            const editName = $('#editName');
+            const editTags = $('#editTags');
+            const editDescription = $('#editDescription');
+            const editUrl = $('#editUrl');
+            const editSave = $('#editSave');
+            const editCancel = $('#editCancel');
+            const exportBtn = $('#exportBtn');
+            const importBtn = $('#importBtn');
+            const importFileInput = $('#importFileInput');
+            const clearAllBtn = $('#clearAllBtn');
 
-        // 渲染列表（根据搜索词过滤）
-        function render(filter = '') {
-            const projects = loadProjects();
-            const list = document.getElementById('projectList');
-            list.innerHTML = '';
-            const q = filter.toLowerCase().trim();
+            // ── 预设示例数据 ─────────────────
+            const PRESET_PROJECTS = [
+                { name: '个人技术博客', tags: '博客 前端 React', description: '用React构建的个人技术博客，分享前端开发经验',
+                    url: 'https://shijieydy.github.io/', date: '2025-03-15', completed: false },
+                { name: '开源UI组件库', tags: '开源 GitHub UI', description: '轻量级React组件库，支持主题定制和按需加载', url: '',
+                    date: '2025-04-02', completed: true },
+                { name: '算法练习笔记', tags: '算法 学习 LeetCode', description: '每日算法练习记录，涵盖常见题型与解题思路', url: '',
+                    date: '2025-02-20', completed: false },
+                { name: '摄影作品集', tags: '摄影 生活 创意', description: '个人摄影作品展示，记录旅行与日常的美好瞬间', url: '',
+                    date: '2025-01-10', completed: false },
+                { name: '天气预报应用', tags: '项目 API JavaScript', description: '调用天气API的SPA应用，支持城市搜索和7天预报', url: '',
+                    date: '2025-04-18', completed: false },
+            ];
 
-            projects.forEach((proj, index) => {
-                const name = proj.name || '';
-                const tags = proj.tags || '';
-                // 如果搜索词不为空，且名称和标签都不包含搜索词，则隐藏
-                if (q && !name.toLowerCase().includes(q) && !tags.toLowerCase().includes(q)) {
+            // ── 数据操作 ──────────────────────
+            function loadProjects() {
+                const json = localStorage.getItem(STORAGE_KEY);
+                let projects;
+                if (json) {
+                    try {
+                        projects = JSON.parse(json);
+                    } catch (e) {
+                        projects = [];
+                    }
+                } else {
+                    // 尝试迁移旧数据
+                    const oldJson = localStorage.getItem('my_projects');
+                    if (oldJson) {
+                        try {
+                            const oldData = JSON.parse(oldJson);
+                            projects = oldData.map(p => ({
+                                name: p.name || '',
+                                tags: p.tags || '',
+                                description: p.description || '',
+                                url: p.url || '',
+                                date: p.date || getToday(),
+                                completed: p.completed || false,
+                            }));
+                            // 迁移后清除旧数据
+                            localStorage.removeItem('my_projects');
+                        } catch (e) {
+                            projects = [...PRESET_PROJECTS];
+                        }
+                    } else {
+                        projects = [...PRESET_PROJECTS];
+                    }
+                }
+                // 规范化数据
+                return projects.map(normalizeProject);
+            }
+
+            function normalizeProject(p) {
+                return {
+                    name: p.name || '',
+                    tags: p.tags || '',
+                    description: p.description || '',
+                    url: p.url || '',
+                    date: p.date || getToday(),
+                    completed: p.completed || false,
+                };
+            }
+
+            function saveProjects(projects) {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(projects));
+            }
+
+            function getToday() {
+                const d = new Date();
+                return d.getFullYear() + '-' +
+                    String(d.getMonth() + 1).padStart(2, '0') + '-' +
+                    String(d.getDate()).padStart(2, '0');
+            }
+
+            // ── 主题管理 ──────────────────────
+            function getTheme() {
+                return localStorage.getItem(THEME_KEY) || 'light';
+            }
+
+            function applyTheme(theme) {
+                document.documentElement.setAttribute('data-theme', theme);
+                const icon = theme === 'dark' ? '☀️' : '🌙';
+                const label = theme === 'dark' ? '亮色' : '暗色';
+                const toggleIcon = themeToggle.querySelector('.toggle-icon');
+                const toggleLabel = themeToggle.querySelector('.toggle-label');
+                if (toggleIcon) toggleIcon.textContent = icon;
+                if (toggleLabel) toggleLabel.textContent = label;
+                localStorage.setItem(THEME_KEY, theme);
+            }
+
+            function toggleTheme() {
+                const current = getTheme();
+                const next = current === 'dark' ? 'light' : 'dark';
+                applyTheme(next);
+                render(searchInput.value);
+            }
+
+            // ── 标签颜色生成 ──────────────────
+            function getTagColors(tag) {
+                let hash = 0;
+                for (let i = 0; i < tag.length; i++) {
+                    hash = tag.charCodeAt(i) + ((hash << 5) - hash);
+                }
+                const hue = Math.abs(hash) % 360;
+                const isDark = getTheme() === 'dark';
+                if (isDark) {
+                    const bg = `hsl(${hue}, 35%, 22%)`;
+                    const text = `hsl(${hue}, 50%, 78%)`;
+                    const border = `hsl(${hue}, 30%, 35%)`;
+                    return { bg, text, border };
+                } else {
+                    const bg = `hsl(${hue}, 55%, 91%)`;
+                    const text = `hsl(${hue}, 45%, 28%)`;
+                    const border = `hsl(${hue}, 40%, 78%)`;
+                    return { bg, text, border };
+                }
+            }
+
+            // ── 转义 ──────────────────────────
+            function escapeHtml(text) {
+                return String(text)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;');
+            }
+
+            // ── 渲染列表 ──────────────────────
+            function render(filter = '') {
+                const projects = loadProjects();
+                const q = filter.toLowerCase().trim();
+                projectList.innerHTML = '';
+
+                let visibleCount = 0;
+                const totalCount = projects.length;
+                const completedCount = projects.filter(p => p.completed).length;
+
+                projects.forEach((proj, index) => {
+                    const name = proj.name || '';
+                    const tags = proj.tags || '';
+                    const description = proj.description || '';
+                    const url = proj.url || '';
+                    const date = proj.date || '';
+                    const completed = proj.completed || false;
+
+                    // 搜索过滤
+                    if (q) {
+                        const searchTarget = [name, tags, description, url].join(' ').toLowerCase();
+                        if (!searchTarget.includes(q)) {
+                            return;
+                        }
+                    }
+                    visibleCount++;
+
+                    const tagList = tags.split(/\s+/).filter(t => t.length > 0);
+
+                    const card = document.createElement('li');
+                    card.className = 'project-card' + (completed ? ' completed' : '');
+                    card.setAttribute('data-original-index', index);
+
+                    let tagsHtml = '';
+                    tagList.forEach(tag => {
+                        const colors = getTagColors(tag);
+                        tagsHtml +=
+                            `<span class="tag-badge" data-tag="${escapeHtml(tag)}" style="background:${colors.bg};color:${colors.text};border-color:${colors.border};" title="点击筛选「${escapeHtml(tag)}」">${escapeHtml(tag)}</span>`;
+                    });
+
+                    const linkHtml = url ?
+                        `<a href="${escapeHtml(url)}" target="_blank" rel="noopener" class="project-link-icon" title="打开链接" onclick="event.stopPropagation();">🔗</a>` :
+                        '';
+
+                    const descHtml = description ?
+                        `<p class="card-description">${escapeHtml(description)}</p>` :
+                        '';
+
+                    card.innerHTML = `
+                <input type="checkbox" class="card-check" ${completed ? 'checked' : ''} data-index="${index}" title="标记完成/未完成">
+                <div class="card-body">
+                  <div class="card-header-row">
+                    <span class="project-name">${escapeHtml(name)}</span>
+                    ${linkHtml}
+                  </div>
+                  ${descHtml}
+                  <div class="card-meta">
+                    ${tagsHtml}
+                    ${date ? `<span style="font-size:0.7rem;">📅 ${escapeHtml(date)}</span>` : ''}
+                  </div>
+                </div>
+                <div class="card-actions">
+                  <button class="btn-icon edit" data-index="${index}" title="编辑">✏️</button>
+                  <button class="btn-icon danger" data-index="${index}" title="删除">✕</button>
+                </div>
+              `;
+
+                    projectList.appendChild(card);
+                });
+
+                // 绑定事件
+                bindCardEvents();
+
+                // 更新统计
+                statTotal.textContent = totalCount;
+                if (completedCount > 0) {
+                    statCompletedChip.style.display = '';
+                    statCompleted.textContent = completedCount;
+                } else {
+                    statCompletedChip.style.display = 'none';
+                }
+                if (q && visibleCount !== totalCount) {
+                    statFilteredChip.style.display = '';
+                    statFiltered.textContent = visibleCount;
+                } else {
+                    statFilteredChip.style.display = 'none';
+                }
+
+                // 空状态
+                if (totalCount === 0) {
+                    emptyState.classList.remove('hidden');
+                    emptyState.querySelector('p').textContent = '还没有项目，快来添加第一个吧！';
+                } else if (visibleCount === 0 && q) {
+                    emptyState.classList.remove('hidden');
+                    emptyState.querySelector('p').textContent = '没有匹配的项目，试试其他关键词～';
+                } else {
+                    emptyState.classList.add('hidden');
+                }
+
+                // 搜索清除按钮
+                if (q) {
+                    searchClear.classList.add('visible');
+                    searchInfo.classList.remove('hidden');
+                    searchInfo.textContent = `找到 ${visibleCount} 个匹配项目`;
+                } else {
+                    searchClear.classList.remove('visible');
+                    searchInfo.classList.add('hidden');
+                }
+
+                updateStatsVisibility(totalCount);
+            }
+
+            function updateStatsVisibility(totalCount) {
+                if (totalCount === 0) {
+                    statsBar.style.opacity = '0.5';
+                } else {
+                    statsBar.style.opacity = '1';
+                }
+            }
+
+            function bindCardEvents() {
+                // 复选框：切换完成状态
+                $$('.card-check').forEach(cb => {
+                    cb.addEventListener('change', function(e) {
+                        e.stopPropagation();
+                        const idx = parseInt(this.getAttribute('data-index'));
+                        const all = loadProjects();
+                        if (idx >= 0 && idx < all.length) {
+                            all[idx].completed = this.checked;
+                            saveProjects(all);
+                            render(searchInput.value);
+                        }
+                    });
+                });
+
+                // 标签点击筛选
+                $$('.tag-badge').forEach(badge => {
+                    badge.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const tag = this.getAttribute('data-tag');
+                        if (tag) {
+                            searchInput.value = tag;
+                            searchInput.focus();
+                            render(tag);
+                        }
+                    });
+                });
+
+                // 编辑按钮
+                $$('.btn-icon.edit').forEach(btn => {
+                    btn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const idx = parseInt(this.getAttribute('data-index'));
+                        openEditModal(idx);
+                    });
+                });
+
+                // 删除按钮
+                $$('.btn-icon.danger').forEach(btn => {
+                    btn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const idx = parseInt(this.getAttribute('data-index'));
+                        deleteProject(idx);
+                    });
+                });
+
+                // 链接点击不冒泡
+                $$('.project-link-icon').forEach(link => {
+                    link.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                    });
+                });
+            }
+
+            // ── 删除项目 ──────────────────────
+            function deleteProject(index) {
+                const all = loadProjects();
+                if (index < 0 || index >= all.length) return;
+                const proj = all[index];
+                const confirmed = confirm(`确定要删除项目「${proj.name}」吗？\n\n此操作不可恢复。`);
+                if (!confirmed) return;
+                all.splice(index, 1);
+                saveProjects(all);
+                render(searchInput.value);
+                // 给列表一个微小的反馈
+                if (projectList.firstChild) {
+                    projectList.firstChild.classList.add('pulse-once');
+                }
+            }
+
+            // ── 编辑模态框 ────────────────────
+            function openEditModal(index) {
+                const all = loadProjects();
+                if (index < 0 || index >= all.length) return;
+                currentEditIndex = index;
+                const proj = all[index];
+                editName.value = proj.name;
+                editTags.value = proj.tags;
+                editDescription.value = proj.description || '';
+                editUrl.value = proj.url || '';
+                editModalOverlay.classList.remove('hidden');
+                editName.focus();
+            }
+
+            function closeEditModal() {
+                editModalOverlay.classList.add('hidden');
+                currentEditIndex = -1;
+            }
+
+            function saveEdit() {
+                if (currentEditIndex < 0) return;
+                const all = loadProjects();
+                if (currentEditIndex >= all.length) {
+                    closeEditModal();
                     return;
                 }
-                const li = document.createElement('li');
-                li.innerHTML = `
-                    <span><strong>${escapeHtml(name)}</strong> <small style="color:#555;">${escapeHtml(tags)}</small></span>
-                    <button class="delete-btn" data-index="${index}">✕</button>
-                `;
-                list.appendChild(li);
+                const name = editName.value.trim();
+                if (!name) {
+                    alert('项目名称不能为空');
+                    editName.focus();
+                    return;
+                }
+                all[currentEditIndex].name = name;
+                all[currentEditIndex].tags = editTags.value.trim();
+                all[currentEditIndex].description = editDescription.value.trim();
+                all[currentEditIndex].url = editUrl.value.trim();
+                saveProjects(all);
+                closeEditModal();
+                render(searchInput.value);
+            }
+
+            editSave.addEventListener('click', saveEdit);
+            editCancel.addEventListener('click', closeEditModal);
+            editModalOverlay.addEventListener('click', function(e) {
+                if (e.target === editModalOverlay) {
+                    closeEditModal();
+                }
+            });
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && !editModalOverlay.classList.contains('hidden')) {
+                    closeEditModal();
+                }
+                if (e.key === 'Enter' && !editModalOverlay.classList.contains('hidden') &&
+                    document.activeElement && document.activeElement.closest('#editModal')) {
+                    if (document.activeElement.tagName !== 'TEXTAREA') {
+                        e.preventDefault();
+                        saveEdit();
+                    }
+                }
             });
 
-            // 给所有删除按钮绑定事件
-            document.querySelectorAll('.delete-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const idx = parseInt(this.getAttribute('data-index'));
-                    const all = loadProjects();
-                    all.splice(idx, 1);
-                    saveProjects(all);
-                    render(document.getElementById('search').value);
+            // ── 添加项目 ──────────────────────
+            function addProject() {
+                const name = newProjectInput.value.trim();
+                if (!name) {
+                    newProjectInput.focus();
+                    newProjectInput.style.borderColor = 'var(--danger)';
+                    setTimeout(() => { newProjectInput.style.borderColor = ''; }, 1500);
+                    return;
+                }
+                const tags = newTagsInput.value.trim();
+                const description = newDescriptionInput.value.trim();
+                const url = newUrlInput.value.trim();
+                const projects = loadProjects();
+                projects.push({
+                    name,
+                    tags,
+                    description,
+                    url,
+                    date: getToday(),
+                    completed: false,
                 });
+                saveProjects(projects);
+                newProjectInput.value = '';
+                newTagsInput.value = '';
+                newDescriptionInput.value = '';
+                newUrlInput.value = '';
+                newProjectInput.focus();
+                render(searchInput.value);
+                // 滚动到顶部让用户看到新项目
+                projectList.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                if (projectList.firstChild) {
+                    projectList.firstChild.classList.add('pulse-once');
+                }
+            }
+
+            addBtn.addEventListener('click', addProject);
+            newProjectInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    addProject();
+                }
             });
-        }
+            newTagsInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    addProject();
+                }
+            });
 
-        // 简单转义防止XSS
-        function escapeHtml(text) {
-            return String(text)
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;');
-        }
+            // ── 更多字段切换 ──────────────────
+            toggleMoreBtn.addEventListener('click', function() {
+                moreFieldsVisible = !moreFieldsVisible;
+                if (moreFieldsVisible) {
+                    moreFields.classList.remove('hidden');
+                    toggleMoreBtn.textContent = '▲';
+                    toggleMoreBtn.title = '收起更多字段';
+                } else {
+                    moreFields.classList.add('hidden');
+                    toggleMoreBtn.textContent = '⋮';
+                    toggleMoreBtn.title = '更多字段';
+                }
+            });
 
-        // 添加新项目
-        document.getElementById('addBtn').addEventListener('click', () => {
-            const nameInput = document.getElementById('newProject');
-            const tagsInput = document.getElementById('newTags');
-            const name = nameInput.value.trim();
-            if (!name) return;
-            const tags = tagsInput.value.trim();
-            const projects = loadProjects();
-            projects.push({ name, tags });
-            saveProjects(projects);
-            nameInput.value = '';
-            tagsInput.value = '';
-            render(document.getElementById('search').value);
-        });
+            // ── 搜索 ──────────────────────────
+            searchInput.addEventListener('input', function() {
+                render(this.value);
+            });
+            searchClear.addEventListener('click', function() {
+                searchInput.value = '';
+                searchInput.focus();
+                render('');
+            });
 
-        // 搜索实时过滤
-        document.getElementById('search').addEventListener('input', function() {
-            render(this.value);
-        });
+            // ── 导出数据 ──────────────────────
+            exportBtn.addEventListener('click', function() {
+                const projects = loadProjects();
+                const json = JSON.stringify(projects, null, 2);
+                const blob = new Blob([json], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'projects-backup-' + getToday() + '.json';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            });
 
-        // 初始渲染
-        render();
+            // ── 导入数据 ──────────────────────
+            importBtn.addEventListener('click', function() {
+                importFileInput.click();
+            });
+            importFileInput.addEventListener('change', function() {
+                const file = this.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const data = JSON.parse(e.target.result);
+                        if (!Array.isArray(data)) {
+                            throw new Error('数据格式不正确，需要JSON数组');
+                        }
+                        const confirmed = confirm(
+                            `即将导入 ${data.length} 个项目。\n\n选择"确定"将替换当前所有数据，\n选择"取消"则合并到现有数据中。\n\n（点确定=替换，点取消=合并追加）`
+                            );
+                        if (confirmed) {
+                            // 替换
+                            const normalized = data.map(normalizeProject);
+                            saveProjects(normalized);
+                        } else {
+                            // 合并追加
+                            const existing = loadProjects();
+                            const normalized = data.map(normalizeProject);
+                            const merged = [...existing, ...normalized];
+                            saveProjects(merged);
+                        }
+                        render(searchInput.value);
+                        alert('数据导入成功！');
+                    } catch (err) {
+                        alert('导入失败：' + err.message);
+                    }
+                };
+                reader.readAsText(file);
+                // 重置input以便可以重复选择同一文件
+                this.value = '';
+            });
+
+            // ── 清空全部 ──────────────────────
+            clearAllBtn.addEventListener('click', function() {
+                const all = loadProjects();
+                if (all.length === 0) {
+                    alert('当前没有项目数据');
+                    return;
+                }
+                const confirmed = confirm(
+                    `确定要清空全部 ${all.length} 个项目吗？\n\n此操作不可恢复！\n\n提示：建议先导出备份。`
+                );
+                if (!confirmed) return;
+                saveProjects([]);
+                searchInput.value = '';
+                render('');
+                alert('所有项目已清空。');
+            });
+
+            // ── 主题初始化与切换 ──────────────
+            applyTheme(getTheme());
+            themeToggle.addEventListener('click', toggleTheme);
+
+            // ── 初始渲染 ──────────────────────
+            render('');
+
+            // ── 快捷键提示 ────────────────────
+            console.log('%c📂 个人项目空间 %c已就绪',
+                'font-size:1.1em;font-weight:bold;', '');
+            console.log('%c⌨️ 快捷键：%c Ctrl+K 聚焦搜索 | Esc 关闭编辑框',
+                'font-weight:bold;', '');
+            document.addEventListener('keydown', function(e) {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                    e.preventDefault();
+                    searchInput.focus();
+                    searchInput.select();
+                }
+            });
+        })();
     </script>
 </body>
 </html>
